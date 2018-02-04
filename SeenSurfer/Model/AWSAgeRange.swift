@@ -7,3 +7,18 @@
 //
 
 import Foundation
+
+class AWSAgeRange: Decodable {
+    var Low: Int?
+    var High: Int?
+    
+    init(withDict dict: [String:Any]) {
+        if let low = dict["Low"] as? Int {
+            self.Low = low
+        }
+        
+        if let high = dict["High"] as? Int {
+            self.High = high
+        }
+    }
+}

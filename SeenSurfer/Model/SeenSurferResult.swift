@@ -7,3 +7,19 @@
 //
 
 import Foundation
+
+class SeenSurferResult: Decodable {
+    var ai: AWSFacialAnalysisResult?
+    var sceneId: String?
+    
+    
+    init(withDict dict: [String:Any]) {
+        if let aiDict = dict["ai"] as? [String:Any] {
+            self.ai = AWSFacialAnalysisResult(withDict: aiDict)
+        }
+        
+        if let sceneId = dict["sceneId"] as? String {
+            self.sceneId = sceneId
+        }
+    }
+}

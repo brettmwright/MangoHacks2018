@@ -8,6 +8,7 @@
 
 import Foundation
 import SocketIO
+import SwiftyJSON
 
 class SocketIOManager: NSObject {
     static let shared = SocketIOManager()
@@ -23,28 +24,21 @@ class SocketIOManager: NSObject {
         socket = _manager.defaultSocket
     }
     
-    func connectToCamera() {
+    func retrieveVenueUpdates(completionHandler: @escaping (_ awsDataArray: [AWSFaceDetail]) -> Void) {
         guard let _socket = socket else { return }
-        //_socket.emit("cam", "")
-
         _socket.on("sceneUpdate") {data, ack in
-            guard let stream = data as? [[String: Any]] else { return }
-
-            print("Data: ", stream)
+            guard let dataDict = data[0] as? [String:Any] else { return }
+            print(dataDict)
+            let result = SeenSurferResult(withDict: dataDict)
+            guard let faceDetails = result.ai?.FaceDetails else { return }
+            for faceDetail in faceDetails {
+                print("___________")
+                print(faceDetail.Gender?.Value)
+                print("___________")
+            }
+            completionHandler(faceDetails)
         }
     }
-    
-//    func connectToCamera(completionHandler: (_ data: Data) -> Void) {
-//        guard let _socket = socket else { return }
-//        _socket.emit("cam", "")
-//
-//        _socket.on("camStream") {data, ack in
-//            guard let stream = data[0]["Payload"] as? Data else { return }
-//            print("Data: ", stream)
-//            completionHandler(data: stream)
-//        }
-//
-//    }
     
     func establishConnection() {
         guard let _socket = socket else { return }
